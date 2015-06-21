@@ -1,0 +1,68 @@
+import sys
+import tweepy
+import datetime
+import signal
+import json
+import csv
+
+start = "2015-06-17"
+end = "2015-06-18"
+
+#Chunking module
+class TweetSerializer:
+   out = None
+   first = True
+   count = 0
+   def start(self):
+      self.count += 1
+      fname = "tweets-"+str(self.count)+".json"
+      self.out = open(fname,"w")
+      self.out.write("[\n")
+      self.first = True
+
+   def end(self):
+      if self.out is not None:
+         self.out.write("\n]\n")
+         self.out.close()
+      self.out = None
+
+   def write(self,tweet):
+      if not self.first:
+         self.out.write(",\n")
+      self.first = False
+      self.out.write(json.dumps(tweet._json).encode('utf8'))
+
+
+
+consumer_key = "BPup9lE4iXfPOrkNJsisY4Su7"
+consumer_secret = "NaI2hCC4sPgWdkbej0AAgmJxxhMiZtvfkTYfR1ZD0ymHLo5IZz"
+
+access_token = "256653168-s3XsZYzoXQqbSMnTNdy6paVpnxvpm2PsebfHMvjz"
+access_token_secret = "6xLv44LDDYuwDGP6ufBHPiTQKxBAYsvQI7QahPLRfDRFV"
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+
+api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+
+q = "%23NBA2015 OR %23Warriors"  # URL encoded query
+
+#Resiliency module
+def interrupt(signum, frame):
+   print "Interrupted, closing ..."
+   # magic goes here
+   exit(1)
+
+signal.signal(signal.SIGINT, interrupt)
+
+count = 0
+# Additional query parameters:
+#   since: {date}
+#   until: {date}
+# Just add them to the 'q' variable: q+" since: 2014-01-01 until: 2014-01-02"
+for tweet in tweepy.Cursor(api.search,q=q, since = start, until = end, lang = "en").items(1000):
+   # FYI: JSON is in tweet._json
+   if '#NBA2015' in tweet.text and '#Warriors' in tweet.text:
+      count += 1
+
+print count
