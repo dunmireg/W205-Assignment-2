@@ -8,8 +8,8 @@ import time
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 
-AWS_Access_Key = 'AKIAIFQPRFL4LAULCF7Q'
-AWS_Secret_Key = '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'
+AWS_Access_Key = '<>'
+AWS_Secret_Key = '<>'
 
 #Chunking module
 class TweetSerializer:
@@ -49,11 +49,11 @@ class TweetSerializer:
       self.out2.write(tweet.text.encode('utf8'))
 
 
-consumer_key = "BPup9lE4iXfPOrkNJsisY4Su7"
-consumer_secret = "NaI2hCC4sPgWdkbej0AAgmJxxhMiZtvfkTYfR1ZD0ymHLo5IZz"
+consumer_key = "<>"
+consumer_secret = "<>"
 
-access_token = "256653168-s3XsZYzoXQqbSMnTNdy6paVpnxvpm2PsebfHMvjz"
-access_token_secret = "6xLv44LDDYuwDGP6ufBHPiTQKxBAYsvQI7QahPLRfDRFV"
+access_token = "<>"
+access_token_secret = "<>"
 
 #auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 #auth.set_access_token(access_token, access_token_secret)
