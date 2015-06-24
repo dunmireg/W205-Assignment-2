@@ -5,6 +5,11 @@ import signal
 import json
 import csv
 import time
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+
+AWS_Access_Key = 'AKIAIFQPRFL4LAULCF7Q'
+AWS_Secret_Key = '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'
 
 #Chunking module
 class TweetSerializer:
@@ -54,12 +59,13 @@ access_token_secret = "6xLv44LDDYuwDGP6ufBHPiTQKxBAYsvQI7QahPLRfDRFV"
 #auth.set_access_token(access_token, access_token_secret)
 auth = tweepy.AppAuthHandler(consumer_key, consumer_secret) #Using AppAuth
 api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
-
+sinceDate = "2015-06-14"
+untilDate = "2015-06-22"
 
 def grabTweets(query, serializer):
     ts_1_count = 0
     ts_1_id = None
-    searchCursor = tweepy.Cursor(api.search,q=query, since_id = ts_1_id, lang = "en").items()
+    searchCursor = tweepy.Cursor(api.search,q=query, since = sinceDate, until = untilDate, max_id = ts_1_id, lang = "en").items()
     while True:
         try:
             tweet = searchCursor.next()
@@ -78,9 +84,10 @@ def grabTweets(query, serializer):
         except StopIteration:
             break
 
-q1 = "#NBAFinals2015 -#Warriors since:2015-06-13 until:2015-06-14"
-q2 = "#Warriors -#NBAFinals2015 since:2015-06-13 until:2015-06-14"
-q3 = "#NBAFinals2015 #Warriors since:2015-06-13 until:2015-06-14"
+
+q1 = "%23NBAFinals2015 -%23Warriors"
+q2 = "%23Warriors -%23NBAFinals2015"
+q3 = "%23NBAFinals2015 %23Warriors"
 
 ts1 = TweetSerializer("#NBAFinals2015")
 ts2 = TweetSerializer("#Warriors")
