@@ -8,9 +8,6 @@ import time
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 
-AWS_Access_Key = 'AKIAIFQPRFL4LAULCF7Q'
-AWS_Secret_Key = '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'
-
 #Chunking module
 class TweetSerializer:
    out = None
