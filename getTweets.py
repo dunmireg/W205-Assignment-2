@@ -46,11 +46,11 @@ class TweetSerializer:
       self.out2.write(tweet.text.encode('utf8'))
 
 
-consumer_key = "BPup9lE4iXfPOrkNJsisY4Su7"
-consumer_secret = "NaI2hCC4sPgWdkbej0AAgmJxxhMiZtvfkTYfR1ZD0ymHLo5IZz"
+consumer_key = "<>"
+consumer_secret = "<>"
 
-access_token = "256653168-s3XsZYzoXQqbSMnTNdy6paVpnxvpm2PsebfHMvjz"
-access_token_secret = "6xLv44LDDYuwDGP6ufBHPiTQKxBAYsvQI7QahPLRfDRFV"
+access_token = "<>"
+access_token_secret = "<>"
 
 #auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 #auth.set_access_token(access_token, access_token_secret)
