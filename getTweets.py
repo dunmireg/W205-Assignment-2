@@ -9,9 +9,12 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 
 #Chunking module
+#This program opens a new file, writes tweets to the file, and handles closing the file
+#Each hashtag will have a serializer that will handle the files and writing them out.
+#The file will have 1,000 tweets
 class TweetSerializer:
-   out = None
-   out2 = None
+   out = None #json file pointer
+   out2 = None #text file pointer
    first = True
    count = 0
 
@@ -42,8 +45,8 @@ class TweetSerializer:
          self.out.write(",\n")
          self.out2.write(",\n")
       self.first = False
-      self.out.write(json.dumps(tweet._json).encode('utf8'))
-      self.out2.write(tweet.text.encode('utf8'))
+      self.out.write(json.dumps(tweet._json).encode('utf8')) #add json
+      self.out2.write(tweet.text.encode('utf8')) #add text
 
 
 consumer_key = "<>"
@@ -55,13 +58,14 @@ access_token_secret = "<>"
 #auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 #auth.set_access_token(access_token, access_token_secret)
 auth = tweepy.AppAuthHandler(consumer_key, consumer_secret) #Using AppAuth
-api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+api = tweepy.API(auth_handler=auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True) #use twitter API
 sinceDate = "2015-06-14"
 untilDate = "2015-06-22"
 
+#handles actually retrieving tweets from the search api for a week
 def grabTweets(query, serializer):
-    ts_1_count = 0
-    ts_1_id = None
+    ts_1_count = 0 #count of how many tweets collected, used for chunking (create files of 1000 tweets)
+    ts_1_id = None #variable to store the id of a tweet for resiliency
     searchCursor = tweepy.Cursor(api.search,q=query, since = sinceDate, until = untilDate, max_id = ts_1_id, lang = "en").items()
     while True:
         try:
@@ -73,7 +77,7 @@ def grabTweets(query, serializer):
             if ts_1_count%1000 == 999:
                 serializer.end()
             ts_1_count += 1
-        except tweepy.TweepError as e:
+        except tweepy.TweepError as e: #handle resiliency by encountering error and backing off for 15 minutes and restarting from tweet id
             print "TweepError found sleeping for 900 seconds"
             time.sleep(900)
             searchCursor = tweepy.Cursor(api.search, q1, since_id = ts_1_id, lang = "en").items()
